@@ -47,6 +47,15 @@ check_sys(){
     fi
     bit=`uname -m`
 }
+Install_Tools(){
+        echo "正在安装依赖..."
+        if [[ ${release} == "centos" ]]; then
+            yum install bind-utils -y  &> /dev/null
+        else
+            apt-get install dnsutils -y &> /dev/null
+        fi
+        echo "安装成功！"
+}
 check_installed_status(){
     [[ ! -e ${brook_file} ]] && echo -e "${Error} Brook 没有安装，请检查 !" && exit 1
 }
@@ -71,7 +80,6 @@ check_pid(){
 check_new_ver(){
     echo -e "请输入要下载安装的 Brook 版本号 ${Green_font_prefix}[ 格式是日期，例如: v20210214 ]${Font_color_suffix}
 版本列表请去这里获取：${Green_font_prefix}[ https://github.com/txthinking/brook/releases ]${Font_color_suffix}
-如需添加域名中转请安装 yum install bind-utils -y 或 apt-get install dnsutils -y"
     read -e -p "直接回车即自动获取:" brook_new_ver
     if [[ -z ${brook_new_ver} ]]; then
         brook_new_ver=$(wget -qO- https://api.github.com/repos/txthinking/brook/releases| grep "tag_name"| head -n 1| awk -F ":" '{print $2}'| sed 's/\"//g;s/,//g;s/ //g')
@@ -531,7 +539,7 @@ Install_brook(){
     echo "" > ${brook_conf}
     echo -e "${Info} 开始设置 iptables防火墙..."
     Set_iptables
-    echo -e "${Info} Brook 安装完成！默认配置文件为空，请选择 [7.设置 Brook 端口转发 - 1.添加 端口转发] 来添加端口转发。"
+    echo -e "${Info} Brook 安装完成！默认配置文件为空，请输入 bash brook-pf-mod.sh ，选择 [7.设置 Brook 端口转发] 。"
 }
 Start_brook(){
     check_installed_status
@@ -742,7 +750,7 @@ else
  ${Green_font_prefix} 7.${Font_color_suffix} 设置 Brook 端口转发
  ${Green_font_prefix} 8.${Font_color_suffix} 查看 Brook 端口转发
  ${Green_font_prefix} 9.${Font_color_suffix} 查看 Brook 日志
- ${Green_font_prefix}10.${Font_color_suffix} 监控 Brook 运行状态(如果使用ddns必须打开)
+ ${Green_font_prefix}10.${Font_color_suffix} 监控 Brook 运行状态(使用DDNS务必打开)
 ————————————" && echo
 if [[ -e ${brook_file} ]]; then
     check_pid

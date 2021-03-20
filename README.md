@@ -9,8 +9,8 @@
 ### 从GitHub拉取
 ```
 For RHEL / CentOS:
-yum install bind-utils wget -y && https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf-mod.sh && chmod +x brook-pf-mod.sh && bash brook-pf-mod.sh
+yum install bind-utils wget -y && wget https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf-mod.sh && chmod +x brook-pf-mod.sh && bash brook-pf-mod.sh
 
 For Debian / Ubuntu
-apt install dnsutils wget -y && https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf-mod.sh && chmod +x brook-pf-mod.sh && bash brook-pf-mod.sh
+apt install dnsutils wget -y && wget https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf-mod.sh && chmod +x brook-pf-mod.sh && bash brook-pf-mod.sh
 ```

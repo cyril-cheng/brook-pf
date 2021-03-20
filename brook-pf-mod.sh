@@ -4,14 +4,13 @@ export PATH
 
 #=================================================
 #   System Required: CentOS/Debian/Ubuntu
-#   Description: Brook
-#   Version: 1.0.1
-#   Author: Toyo, yulewang(DDNS features)
-#   Modify：ECIAP, SXR666
+#   Description: Brook端口转发再修改版
+#   Version: 1.0.2
+#   Author: Toyo, yulewang, ECIAP, SXR666
 #   Blog: https://doubibackup.com/yv4cp61c.html
 #=================================================
 
-sh_ver="1.0.1"
+sh_ver="1.0.2"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 file="/usr/local/brook-pf"

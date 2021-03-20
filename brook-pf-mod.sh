@@ -182,7 +182,7 @@ Read_config(){
 }
 Set_pf_Enabled(){
     echo -e "立即启用该端口转发，还是禁用？ [Y/n]"
-    read -e -p "(默认: Y 启用):" pf_Enabled_un
+    read -e -p "( 默认: Y 启用):" pf_Enabled_un
     [[ -z ${pf_Enabled_un} ]] && pf_Enabled_un="y"
     if [[ ${pf_Enabled_un} == [Yy] ]]; then
         bk_Enabled="1"

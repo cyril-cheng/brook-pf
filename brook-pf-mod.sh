@@ -11,7 +11,7 @@ export PATH
 #   Blog: https://doubibackup.com/yv4cp61c.html
 #=================================================
 
-sh_ver="1.0.0"
+sh_ver="1.0.1"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 file="/usr/local/brook-pf"

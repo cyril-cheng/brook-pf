@@ -46,15 +46,6 @@ check_sys(){
     fi
     bit=`uname -m`
 }
-Install_Tools(){
-         echo "正在安装依赖..."
-         if [[ ${release} == "centos" ]]; then
-             yum install bind-utils -y  &> /dev/null
-         else
-             apt-get install dnsutils -y &> /dev/null
-         fi
-         echo "安装成功！"
-}
 check_installed_status(){
     [[ ! -e ${brook_file} ]] && echo -e "${Error} Brook 没有安装，请检查 !" && exit 1
 }

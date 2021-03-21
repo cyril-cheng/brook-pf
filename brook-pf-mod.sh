@@ -5,12 +5,12 @@ export PATH
 #=================================================
 #   System Required: CentOS/Debian/Ubuntu
 #   Description: Brook端口转发再修改版
-#   Version: 1.0.2
+#   Version: 1.0.3
 #   Author: Toyo, yulewang, ECIAP, SXR666
 #   Blog: https://doubibackup.com/yv4cp61c.html
 #=================================================
 
-sh_ver="1.0.2"
+sh_ver="1.0.3"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 file="/usr/local/brook-pf"
@@ -194,7 +194,7 @@ Set_port_Modify(){
     while true
         do
         echo -e "请选择并输入要修改的 Brook 端口转发本地监听端口 [1-65535]"
-        read -e -p "(默认取消):" bk_port_Modify
+        read -e -p "默认取消:" bk_port_Modify
         [[ -z "${bk_port_Modify}" ]] && echo "取消..." && exit 1
         echo $((${bk_port_Modify}+0)) &>/dev/null
         if [[ $? -eq 0 ]]; then
@@ -217,7 +217,7 @@ Set_port(){
     while true
         do
         echo -e "请输入 Brook 本地监听端口 [1-65535]（端口不能重复，避免冲突）"
-        read -e -p "(默认取消):" bk_port
+        read -e -p "默认取消:" bk_port
         [[ -z "${bk_port}" ]] && echo "已取消..." && exit 1
         echo $((${bk_port}+0)) &>/dev/null
         if [[ $? -eq 0 ]]; then
@@ -236,7 +236,7 @@ Set_port(){
 }
 Set_IP_pf(){
     echo "请输入被转发的 IP :"
-    read -e -p "(默认取消):" bk_ip_pf
+    read -e -p "默认取消:" bk_ip_pf
     [[ -z "${bk_ip_pf}" ]] && echo "已取消..." && exit 1
     echo && echo "========================"
     echo -e "   被转发IP : ${Red_background_prefix} ${bk_ip_pf} ${Font_color_suffix}"
@@ -244,7 +244,7 @@ Set_IP_pf(){
 }
 Set_DOMAIN_pf(){
     echo "请输入被转发的 域名 :"
-    read -e -p "(默认取消):" bk_domain_pf
+    read -e -p "默认取消:" bk_domain_pf
     [[ -z "${bk_domain_pf}" ]] && echo "已取消..." && exit 1
     echo && echo "========================"
     echo -e "   被转发域名 : ${Red_background_prefix} ${bk_domain_pf} ${Font_color_suffix}"
@@ -254,7 +254,7 @@ Set_port_pf(){
     while true
         do
         echo -e "请输入 Brook 被转发的端口 [1-65535]"
-        read -e -p "(默认取消):" bk_port_pf
+        read -e -p "默认取消:" bk_port_pf
         [[ -z "${bk_port_pf}" ]] && echo "已取消..." && exit 1
         echo $((${bk_port_pf}+0)) &>/dev/null
         if [[ $? -eq 0 ]]; then
@@ -281,7 +281,7 @@ Set_brook(){
  ${Green_font_prefix}4.${Font_color_suffix}  启用/禁用 端口转发
  
  ${Tip} 本地监听端口不能重复，被转发的IP或端口可重复!" && echo
-    read -e -p "(默认: 取消):" bk_modify
+    read -e -p "默认: 取消:" bk_modify
     [[ -z "${bk_modify}" ]] && echo "已取消..." && exit 1
     if [[ ${bk_modify} == "1" ]]; then
         Add_pf
@@ -504,7 +504,7 @@ Modify_Enabled_pf(){
         fi
     else
         echo -e "该端口转发已${Green_font_prefix}启用${Font_color_suffix}，是否${Red_font_prefix}禁用${Font_color_suffix}？ [Y/n]"
-        read -e -p "(默认: Y 禁用):" user_Enabled_pf_text_un
+        read -e -p "默认: Y 禁用:" user_Enabled_pf_text_un
         [[ -z ${user_Enabled_pf_text_un} ]] && user_Enabled_pf_text_un="y"
         if [[ ${user_Enabled_pf_text_un} == [Yy] ]]; then
             user_Enabled_pf_text_1="0"
@@ -565,7 +565,7 @@ Update_brook(){
  ${Green_font_prefix}2.${Font_color_suffix}  国外服务器(Github)
  
  ${Tip} 因为国内对 Github 限速，这会导致国内服务器下载速度极慢，所以选择 国内服务器 选项就会从我的 逗比云 下载!" && echo
-    read -e -p "(默认: 2 国外服务器):" bk_Download
+    read -e -p "默认: 2 国外服务器:" bk_Download
     [[ -z "${bk_Download}" ]] && bk_Download="2"
     if [[ ${bk_Download} == "1" ]]; then
         Download_type="1"
@@ -578,7 +578,7 @@ Update_brook(){
 Uninstall_brook(){
     check_installed_status
     echo -e "确定要卸载 Brook ? [y/N]\n"
-    read -e -p "(默认: n):" unyn
+    read -e -p "默认: n:" unyn
     [[ -z ${unyn} ]] && unyn="n"
     if [[ ${unyn} == [Yy] ]]; then
         check_pid
@@ -721,7 +721,7 @@ Resolve_Hostname_To_IP(){
 }
 Update_Shell(){
     sh_new_ver=$(wget --no-check-certificate -qO- -t1 -T3 "https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf-mod.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1) && sh_new_type="github"
-    [[ -z ${sh_new_ver} ]] && echo -e "${Error} 无法链接到 Github !" && exit 0
+    [[ -z ${sh_new_ver} ]] && echo -e "${Error} 无法连接到 Github !" && exit 0
     if [[ -e "/etc/init.d/brook-pf" ]]; then
         rm -rf /etc/init.d/brook-pf
         Service_brook

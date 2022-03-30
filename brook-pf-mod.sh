@@ -4,13 +4,13 @@ export PATH
 
 #=================================================
 #   System Required: CentOS/Debian/Ubuntu
-#   Description: Brook端口转发再修改版
-#   Version: 1.0.4
-#   Author: Toyo, yulewang, ECIAP, SXR666
-#   Blog: https://doubibackup.com/yv4cp61c.html
+#   Description: Brook
+#   Version: 1.0.0
+#   Author: Toyo, yulewang(DDNS features)
+#   Blog: https://doub.io/wlzy-jc37/
 #=================================================
 
-sh_ver="1.0.4"
+sh_ver="1.0.0"
 filepath=$(cd "$(dirname "$0")"; pwd)
 file_1=$(echo -e "${filepath}"|awk -F "$0" '{print $1}')
 file="/usr/local/brook-pf"
@@ -25,7 +25,7 @@ Error="${Red_font_prefix}[错误]${Font_color_suffix}"
 Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
 
 check_root(){
-    [[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT用户(或没有ROOT权限)，无法继续操作，请更换ROOT用户或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限（执行后可能会提示输入当前账号的密码）。" && exit 1
+    [[ $EUID != 0 ]] && echo -e "${Error} 当前非ROOT账号(或没有ROOT权限)，无法继续操作，请更换ROOT账号或使用 ${Green_background_prefix}sudo su${Font_color_suffix} 命令获取临时ROOT权限（执行后可能会提示输入当前账号的密码）。" && exit 1
 }
 #检查系统
 check_sys(){
@@ -45,15 +45,6 @@ check_sys(){
         release="centos"
     fi
     bit=`uname -m`
-}
-Install_Tools(){
-        echo "正在安装依赖..."
-        if [[ ${release} == "centos" ]]; then
-            yum install bind-utils -y  &> /dev/null
-        else
-            apt-get install dnsutils -y &> /dev/null
-        fi
-        echo "安装成功！"
 }
 check_installed_status(){
     [[ ! -e ${brook_file} ]] && echo -e "${Error} Brook 没有安装，请检查 !" && exit 1
@@ -77,8 +68,8 @@ check_pid(){
     PID=$(ps -ef| grep "brook relays"| grep -v grep| grep -v ".sh"| grep -v "init.d"| grep -v "service"| awk '{print $2}')
 }
 check_new_ver(){
-    echo -e "请输入要下载安装的 Brook 版本号 ${Green_font_prefix}[ 格式是日期，例如: v20210214 ]${Font_color_suffix}
-版本列表请去这里获取：${Green_font_prefix}[ https://github.com/txthinking/brook/releases ]${Font_color_suffix}
+    echo -e "请输入要下载安装的 Brook 版本号 ${Green_font_prefix}[ 格式是日期，例如: v20180909 ]${Font_color_suffix}
+版本列表请去这里获取：${Green_font_prefix}[ https://github.com/txthinking/brook/releases ]${Font_color_suffix}"
     read -e -p "直接回车即自动获取:" brook_new_ver
     if [[ -z ${brook_new_ver} ]]; then
         brook_new_ver=$(wget -qO- https://api.github.com/repos/txthinking/brook/releases| grep "tag_name"| head -n 1| awk -F ":" '{print $2}'| sed 's/\"//g;s/,//g;s/ //g')
@@ -146,7 +137,8 @@ Download_brook(){
     [[ ! -e ${file} ]] && mkdir ${file}
     cd ${file}
     if [[ ${bit} == "x86_64" ]]; then
-        wget --no-check-certificate -N "https://github.com/txthinking/brook/releases/download/${brook_new_ver}/brook_linux_amd64" && mv brook_linux_amd64 brook
+        wget --no-check-certificate -N "https://github.com/txthinking/brook/releases/download/${brook_new_ver}/brook_linux_amd64"
+	mv brook_linux_amd64 brook
     else
         wget --no-check-certificate -N "https://github.com/txthinking/brook/releases/download/${brook_new_ver}/brook_linux_386"
         mv brook_linux_386 brook
@@ -156,14 +148,14 @@ Download_brook(){
 }
 Service_brook(){
     if [[ ${release} = "centos" ]]; then
-        if ! wget --no-check-certificate https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf_centos -O /etc/init.d/brook-pf; then
+        if ! wget --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/service/brook-pf_centos -O /etc/init.d/brook-pf; then
             echo -e "${Error} Brook服务 管理脚本下载失败 !" && exit 1
         fi
         chmod +x /etc/init.d/brook-pf
         chkconfig --add brook-pf
         chkconfig brook-pf on
     else
-        if ! wget --no-check-certificate https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf_debian -O /etc/init.d/brook-pf; then
+        if ! wget --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/service/brook-pf_debian -O /etc/init.d/brook-pf; then
             echo -e "${Error} Brook服务 管理脚本下载失败 !" && exit 1
         fi
         chmod +x /etc/init.d/brook-pf
@@ -538,7 +530,7 @@ Install_brook(){
     echo "" > ${brook_conf}
     echo -e "${Info} 开始设置 iptables防火墙..."
     Set_iptables
-    echo -e "${Info} Brook 安装完成！默认配置文件为空，请输入 bash brook-pf-mod.sh ，选择 [7.设置 Brook 端口转发]。"
+    echo -e "${Info} Brook 安装完成！默认配置文件为空，请选择 [7.设置 Brook 端口转发 - 1.添加 端口转发] 来添加端口转发。"
 }
 Start_brook(){
     check_installed_status
@@ -720,13 +712,13 @@ Resolve_Hostname_To_IP(){
     fi
 }
 Update_Shell(){
-    sh_new_ver=$(wget --no-check-certificate -qO- -t1 -T3 "https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf-mod.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1) && sh_new_type="github"
+    sh_new_ver=$(wget --no-check-certificate -qO- -t1 -T3 "https://raw.githubusercontent.com/yulewang/brook/master/brook-pf-mod.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1) && sh_new_type="github"
     [[ -z ${sh_new_ver} ]] && echo -e "${Error} 无法链接到 Github !" && exit 0
     if [[ -e "/etc/init.d/brook-pf" ]]; then
         rm -rf /etc/init.d/brook-pf
         Service_brook
     fi
-    wget -N --no-check-certificate "https://raw.githubusercontent.com/SXR666/brook-pf/main/brook-pf-mod.sh" && chmod +x brook-pf-mod.sh
+    wget -N --no-check-certificate "https://raw.githubusercontent.com/yulewang/brook/master/brook-pf-mod.sh" && chmod +x brook-pf-mod.sh
     echo -e "脚本已更新为最新版本[ ${sh_new_ver} ] !(注意：因为更新方式为直接覆盖当前运行的脚本，所以可能下面会提示一些报错，无视即可)" && exit 0
 }
 check_sys
@@ -734,7 +726,7 @@ action=$1
 if [[ "${action}" == "monitor" ]]; then
     crontab_monitor_brook
 else
-    echo && echo -e "  Brook 端口转发一键脚本(支持DDNS) ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
+    echo && echo -e "  Brook 端口转发 一键管理脚本修改版(DDNS支持) ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   
  ${Green_font_prefix} 0.${Font_color_suffix} 升级脚本
 ————————————
@@ -749,7 +741,7 @@ else
  ${Green_font_prefix} 7.${Font_color_suffix} 设置 Brook 端口转发
  ${Green_font_prefix} 8.${Font_color_suffix} 查看 Brook 端口转发
  ${Green_font_prefix} 9.${Font_color_suffix} 查看 Brook 日志
- ${Green_font_prefix}10.${Font_color_suffix} 监控 Brook 运行状态(使用DDNS必须打开)
+ ${Green_font_prefix}10.${Font_color_suffix} 监控 Brook 运行状态(如果使用ddns必须打开)
 ————————————" && echo
 if [[ -e ${brook_file} ]]; then
     check_pid
